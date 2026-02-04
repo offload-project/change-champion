@@ -316,6 +316,11 @@ on:
     types: [ closed ]
     branches: [ main ]
 
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -324,7 +329,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: offload-project/change-champion@v1
+      - uses: offload-project/change-champion@v1.3.1  # Use latest version
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
