@@ -60,6 +60,7 @@ class VersionCommand extends Command
         $config = $configManager->getConfig();
         $changelogGenerator->setRepositoryUrl($config->repository);
         $changelogGenerator->setSections($config->sections);
+        $changelogGenerator->setVersionPrefix($config->versionPrefix);
         $currentVersion = $configManager->getCurrentVersion();
         $parsed = $versionCalculator->parseVersion($currentVersion);
         $isCurrentPrerelease = null !== $parsed['prerelease'];
