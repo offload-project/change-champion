@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.3.1 - 2026-02-04
+
+### Fixes
+
+- Add configurable php-version input to GitHub Action (default: 8.2)
+
 ## v1.3.0 - 2026-02-04
 
 ### Features
