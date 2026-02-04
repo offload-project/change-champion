@@ -19,6 +19,7 @@ class Config
         public readonly array $sections = self::DEFAULT_SECTIONS,
         public readonly string $releaseBranchPrefix = 'release/',
         public readonly string $versionPrefix = 'v',
+        public readonly bool $draftRelease = false,
     ) {}
 
     public static function fromArray(array $data): self
@@ -32,6 +33,7 @@ class Config
             sections: $sections,
             releaseBranchPrefix: $data['releaseBranchPrefix'] ?? 'release/',
             versionPrefix: $data['versionPrefix'] ?? 'v',
+            draftRelease: $data['draftRelease'] ?? false,
         );
     }
 
@@ -44,6 +46,7 @@ class Config
             'sections' => $this->sections,
             'releaseBranchPrefix' => $this->releaseBranchPrefix,
             'versionPrefix' => $this->versionPrefix,
+            'draftRelease' => $this->draftRelease,
         ];
     }
 
