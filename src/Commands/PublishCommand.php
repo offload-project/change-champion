@@ -34,7 +34,7 @@ class PublishCommand extends Command
         $configManager = new ConfigManager($basePath);
 
         if (!$configManager->isInitialized()) {
-            $io->error('Changesets not initialized. Run "cc init" first.');
+            $io->error('Changesets not initialized. Run "champ init" first.');
 
             return Command::FAILURE;
         }
@@ -46,12 +46,12 @@ class PublishCommand extends Command
             return Command::FAILURE;
         }
 
-        // Get version from CHANGELOG (source of truth after cc version runs)
+        // Get version from CHANGELOG (source of truth after champ version runs)
         $changelogGenerator = new ChangelogGenerator($basePath);
         $version = $changelogGenerator->getLatestVersion();
 
         if (null === $version) {
-            $io->error('No version found in CHANGELOG.md. Run "cc version" first.');
+            $io->error('No version found in CHANGELOG.md. Run "champ version" first.');
 
             return Command::FAILURE;
         }

@@ -37,7 +37,7 @@ class AddCommand extends Command
         $changesetManager = new ChangesetManager($configManager);
 
         if (!$configManager->isInitialized()) {
-            $io->error('Changesets not initialized. Run "cc init" first.');
+            $io->error('Changesets not initialized. Run "champ init" first.');
 
             return Command::FAILURE;
         }

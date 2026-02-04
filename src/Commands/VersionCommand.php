@@ -42,7 +42,7 @@ class VersionCommand extends Command
         $changelogGenerator = new ChangelogGenerator($basePath);
 
         if (!$configManager->isInitialized()) {
-            $io->error('Changesets not initialized. Run "cc init" first.');
+            $io->error('Changesets not initialized. Run "champ init" first.');
 
             return Command::FAILURE;
         }
@@ -134,7 +134,7 @@ class VersionCommand extends Command
             'Next steps:',
             '  1. Review the changes to CHANGELOG.md',
             '  2. Commit the changes',
-            '  3. Run "cc publish" to create a git tag (v'.$nextVersion.')',
+            '  3. Run "champ publish" to create a git tag (v'.$nextVersion.')',
         ]);
 
         return Command::SUCCESS;

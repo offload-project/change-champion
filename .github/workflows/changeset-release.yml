@@ -2,9 +2,9 @@ name: Changeset Release
 
 on:
   workflow_run:
-    workflows: [Tests, Lint]
-    types: [completed]
-    branches: [main]
+    workflows: [ Tests, Lint ]
+    types: [ completed ]
+    branches: [ main ]
 
 jobs:
   check:
@@ -58,8 +58,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist
 
-      - name: Run cc version
-        run: echo "y" | ./bin/cc version
+      - name: Run champ version
+        run: echo "y" | ./bin/champ version
 
       - name: Get new version
         id: version

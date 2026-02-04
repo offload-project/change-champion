@@ -61,7 +61,7 @@ class InitCommand extends Command
         $io->success('Changesets initialized!');
         $io->note([
             'Next steps:',
-            '  1. Run "cc add" to create your first changeset',
+            '  1. Run "champ add" to create your first changeset',
             '  2. Commit the .changes directory to your repository',
         ]);
 

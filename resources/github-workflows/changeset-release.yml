@@ -2,7 +2,7 @@ name: Changeset Release
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths:
       - '.changes/*.md'
       - '!.changes/README.md'
@@ -46,11 +46,11 @@ jobs:
             echo "No changesets found"
           fi
 
-      - name: Run cc version
+      - name: Run champ version
         if: steps.check.outputs.has_changesets == 'true'
         run: |
           # Run version command non-interactively
-          echo "y" | ./vendor/bin/cc version
+          echo "y" | ./vendor/bin/champ version
 
       - name: Get new version
         if: steps.check.outputs.has_changesets == 'true'
