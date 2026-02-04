@@ -82,6 +82,43 @@ champ add --empty
 - `--message`, `-m` - Summary of the change
 - `--empty` - Create an empty changeset
 
+### `champ generate`
+
+Generate changesets from conventional commits (hybrid mode like release-please).
+
+```bash
+# Generate from latest tag to HEAD
+champ generate
+
+# Preview without creating files
+champ generate --dry-run
+
+# Specify commit range
+champ generate --from=v1.0.0 --to=HEAD
+```
+
+**Options:**
+
+- `--from` - Starting ref (tag, commit, or branch). Defaults to latest tag.
+- `--to` - Ending ref. Defaults to HEAD.
+- `--dry-run` - Show what would be generated without creating files
+
+**Conventional commit types:**
+
+| Commit Type | Changeset Type | Example |
+|-------------|----------------|---------|
+| `feat` | minor | `feat: add user authentication` |
+| `feat!` | major | `feat!: remove deprecated API` |
+| `fix` | patch | `fix: resolve null pointer` |
+| `perf` | patch | `perf: optimize database queries` |
+| `refactor` | patch | `refactor: extract helper function` |
+| `docs` | ignored | `docs: update README` |
+| `chore` | ignored | `chore: update dependencies` |
+| `test` | ignored | `test: add unit tests` |
+| `ci` | ignored | `ci: update workflow` |
+
+**Breaking changes** are detected via `!` suffix (e.g., `feat!:`) or `BREAKING CHANGE:` in the commit body.
+
 ### `champ status`
 
 Show pending changesets and the calculated next version.
