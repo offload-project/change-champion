@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.3.0 - 2026-02-04
+
+### Features
+
+- - New `cc check` command validates changeset format for CI
 ## 0.2.0 - 2026-02-04
 
 ### Features
