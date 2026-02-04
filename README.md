@@ -105,17 +105,17 @@ champ generate --from=v1.0.0 --to=HEAD
 
 **Conventional commit types:**
 
-| Commit Type | Changeset Type | Example |
-|-------------|----------------|---------|
-| `feat` | minor | `feat: add user authentication` |
-| `feat!` | major | `feat!: remove deprecated API` |
-| `fix` | patch | `fix: resolve null pointer` |
-| `perf` | patch | `perf: optimize database queries` |
-| `refactor` | patch | `refactor: extract helper function` |
-| `docs` | ignored | `docs: update README` |
-| `chore` | ignored | `chore: update dependencies` |
-| `test` | ignored | `test: add unit tests` |
-| `ci` | ignored | `ci: update workflow` |
+| Commit Type | Changeset Type | Example                             |
+|-------------|----------------|-------------------------------------|
+| `feat`      | minor          | `feat: add user authentication`     |
+| `feat!`     | major          | `feat!: remove deprecated API`      |
+| `fix`       | patch          | `fix: resolve null pointer`         |
+| `perf`      | patch          | `perf: optimize database queries`   |
+| `refactor`  | patch          | `refactor: extract helper function` |
+| `docs`      | ignored        | `docs: update README`               |
+| `chore`     | ignored        | `chore: update dependencies`        |
+| `test`      | ignored        | `test: add unit tests`              |
+| `ci`        | ignored        | `ci: update workflow`               |
 
 **Breaking changes** are detected via `!` suffix (e.g., `feat!:`) or `BREAKING CHANGE:` in the commit body.
 
@@ -311,10 +311,10 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    types: [closed]
-    branches: [main]
+    types: [ closed ]
+    branches: [ main ]
 
 jobs:
   release:
@@ -330,24 +330,26 @@ jobs:
 ```
 
 This single workflow handles everything:
+
 - Creates release PRs when changesets are merged
 - Creates git tags and GitHub releases when release PRs are merged
 
 ### Action Inputs
 
-| Input | Description | Default |
-|-------|-------------|---------|
-| `token` | GitHub token for creating PRs and releases | `${{ github.token }}` |
-| `version` | Version of change-champion to use | `latest` |
-| `publish` | Whether to create git tag when release PR is merged | `true` |
+| Input         | Description                                         | Default               |
+|---------------|-----------------------------------------------------|-----------------------|
+| `token`       | GitHub token for creating PRs and releases          | `${{ github.token }}` |
+| `php-version` | PHP version to use                                  | `8.2`                 |
+| `version`     | Version of change-champion to use                   | `latest`              |
+| `publish`     | Whether to create git tag when release PR is merged | `true`                |
 
 ### Action Outputs
 
-| Output | Description |
-|--------|-------------|
-| `published` | Whether a release was published |
-| `version` | The version that was released |
-| `hasChangesets` | Whether there are pending changesets |
+| Output              | Description                                |
+|---------------------|--------------------------------------------|
+| `published`         | Whether a release was published            |
+| `version`           | The version that was released              |
+| `hasChangesets`     | Whether there are pending changesets       |
 | `pullRequestNumber` | The pull request number if one was created |
 
 ## GitHub Actions Workflows
@@ -389,4 +391,4 @@ After installing the workflows, enable the required permissions:
 
 ## License
 
-MIT
+The MIT License (MIT). Please see [License File](LICENSE) for more information.

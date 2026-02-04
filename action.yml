@@ -7,6 +7,10 @@ branding:
   color: 'yellow'
 
 inputs:
+  php-version:
+    description: 'PHP version to use'
+    required: false
+    default: '8.2'
   version:
     description: 'Version of change-champion to use'
     required: false
@@ -40,7 +44,7 @@ runs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.1'
+        php-version: ${{ inputs.php-version }}
         tools: composer:v2
 
     - name: Install change-champion
