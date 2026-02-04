@@ -50,6 +50,7 @@ class ConfigTest extends TestCase
 
         $this->assertSame('main', $config->baseBranch);
         $this->assertTrue($config->changelog);
+        $this->assertNull($config->repository);
     }
 
     public function testFromArrayWithPartialValues(): void
@@ -60,6 +61,18 @@ class ConfigTest extends TestCase
 
         $this->assertSame('release', $config->baseBranch);
         $this->assertTrue($config->changelog);
+        $this->assertNull($config->repository);
+    }
+
+    public function testFromArrayWithRepository(): void
+    {
+        $config = Config::fromArray([
+            'baseBranch' => 'main',
+            'changelog' => true,
+            'repository' => 'https://github.com/owner/repo',
+        ]);
+
+        $this->assertSame('https://github.com/owner/repo', $config->repository);
     }
 
     public function testToArray(): void
@@ -74,6 +87,24 @@ class ConfigTest extends TestCase
         $this->assertSame([
             'baseBranch' => 'develop',
             'changelog' => true,
+            'repository' => null,
+        ], $array);
+    }
+
+    public function testToArrayWithRepository(): void
+    {
+        $config = new Config(
+            baseBranch: 'main',
+            changelog: true,
+            repository: 'https://github.com/owner/repo'
+        );
+
+        $array = $config->toArray();
+
+        $this->assertSame([
+            'baseBranch' => 'main',
+            'changelog' => true,
+            'repository' => 'https://github.com/owner/repo',
         ], $array);
     }
 
