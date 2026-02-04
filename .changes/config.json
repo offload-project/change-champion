@@ -1,5 +1,6 @@
 {
     "baseBranch": "main",
     "changelog": true,
-    "versionPrefix": "v"
+    "versionPrefix": "v",
+    "draftRelease": true
 }
