@@ -247,7 +247,7 @@ Configuration is stored in `.changes/config.json`:
     "minor": "Features",
     "patch": "Fixes"
   },
-  "releaseBranchPrefix": "changeset-release/",
+  "releaseBranchPrefix": "release/",
   "versionPrefix": "v"
 }
 ```
@@ -258,8 +258,8 @@ Configuration is stored in `.changes/config.json`:
 - `changelog` - Whether to generate changelog entries (default: `true`)
 - `repository` - Repository URL for linking issues (auto-detected from git remote if not set)
 - `sections` - Custom section headers for changelog (defaults shown above)
-- `releaseBranchPrefix` - Branch prefix for release PRs created by GitHub Actions (default: `changeset-release/`)
-- `versionPrefix` - Prefix for version numbers in changelog headers (default: empty, use `"v"` for `v1.0.0` format)
+- `releaseBranchPrefix` - Branch prefix for release PRs created by GitHub Actions (default: `release/`)
+- `versionPrefix` - Prefix for version numbers in changelog headers (default: `v` for `v1.0.0` format)
 
 ## Issue Linking
 
