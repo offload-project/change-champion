@@ -17,8 +17,8 @@ class Config
         public readonly bool $changelog = true,
         public readonly ?string $repository = null,
         public readonly array $sections = self::DEFAULT_SECTIONS,
-        public readonly string $releaseBranchPrefix = 'changeset-release/',
-        public readonly string $versionPrefix = '',
+        public readonly string $releaseBranchPrefix = 'release/',
+        public readonly string $versionPrefix = 'v',
     ) {}
 
     public static function fromArray(array $data): self
@@ -30,8 +30,8 @@ class Config
             changelog: $data['changelog'] ?? true,
             repository: $data['repository'] ?? null,
             sections: $sections,
-            releaseBranchPrefix: $data['releaseBranchPrefix'] ?? 'changeset-release/',
-            versionPrefix: $data['versionPrefix'] ?? '',
+            releaseBranchPrefix: $data['releaseBranchPrefix'] ?? 'release/',
+            versionPrefix: $data['versionPrefix'] ?? 'v',
         );
     }
 
