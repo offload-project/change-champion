@@ -6,6 +6,7 @@ namespace ChangeChampion;
 
 use ChangeChampion\Commands\AddCommand;
 use ChangeChampion\Commands\CheckCommand;
+use ChangeChampion\Commands\GenerateCommand;
 use ChangeChampion\Commands\InitCommand;
 use ChangeChampion\Commands\PreviewCommand;
 use ChangeChampion\Commands\PublishCommand;
@@ -24,6 +25,7 @@ class Application extends BaseApplication
         $this->addCommands([
             new InitCommand(),
             new AddCommand(),
+            new GenerateCommand(),
             new StatusCommand(),
             new VersionCommand(),
             new PublishCommand(),
