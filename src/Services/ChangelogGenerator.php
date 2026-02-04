@@ -58,7 +58,7 @@ class ChangelogGenerator
      *
      * @param Changeset[] $changesets
      */
-    private function generateEntry(string $version, array $changesets): string
+    public function generateEntry(string $version, array $changesets): string
     {
         $date = date('Y-m-d');
         $lines = [];

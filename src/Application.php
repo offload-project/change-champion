@@ -7,6 +7,7 @@ namespace ChangeChampion;
 use ChangeChampion\Commands\AddCommand;
 use ChangeChampion\Commands\CheckCommand;
 use ChangeChampion\Commands\InitCommand;
+use ChangeChampion\Commands\PreviewCommand;
 use ChangeChampion\Commands\PublishCommand;
 use ChangeChampion\Commands\StatusCommand;
 use ChangeChampion\Commands\VersionCommand;
@@ -27,6 +28,7 @@ class Application extends BaseApplication
             new VersionCommand(),
             new PublishCommand(),
             new CheckCommand(),
+            new PreviewCommand(),
         ]);
     }
 }
