@@ -1,5 +1,10 @@
 # Change Champion
 
+![Test Status](https://img.shields.io/github/actions/workflow/status/offload-project/change-champion/tests.yml?branch=main&label=tests)
+![Packagist Downloads](https://img.shields.io/packagist/dt/offload-project/change-champion)
+![Packagist Version](https://img.shields.io/packagist/v/offload-project/change-champion)
+![License](https://img.shields.io/github/license/offload-project/change-champion)
+
 A tool to manage versioning and changelogs for Composer packages, inspired
 by [changesets](https://github.com/changesets/changesets).
 
@@ -193,7 +198,8 @@ Configuration is stored in `.changes/config.json`:
 ```json
 {
   "baseBranch": "main",
-  "changelog": true
+  "changelog": true,
+  "repository": "https://github.com/owner/repo"
 }
 ```
 
@@ -201,6 +207,27 @@ Configuration is stored in `.changes/config.json`:
 
 - `baseBranch` - The base branch for comparisons (default: `main`)
 - `changelog` - Whether to generate changelog entries (default: `true`)
+- `repository` - Repository URL for linking issues (auto-detected from git remote if not set)
+
+## Issue Linking
+
+Issue references in changesets are automatically linked to the repository:
+
+```markdown
+---
+type: patch
+---
+
+Fix authentication bug. Fixes #123
+```
+
+Generates:
+
+```markdown
+- Fix authentication bug. Fixes [#123](https://github.com/owner/repo/issues/123)
+```
+
+Supported patterns: `#123`, `Fixes #123`, `Closes #123`, `Resolves #123`
 
 ## Semantic Versioning
 
@@ -240,12 +267,14 @@ Comments on PRs that don't include a changeset, reminding contributors to add on
 ### `changeset-release.yml`
 
 When changesets are merged to `main`, automatically:
+
 - Runs `cc version` to bump the version and update changelog
 - Creates a "Release vX.X.X" pull request
 
 ### `changeset-publish.yml`
 
 When a release PR is merged, automatically:
+
 - Creates a git tag
 - Creates a GitHub Release with changelog content
 
@@ -255,8 +284,8 @@ After installing the workflows, enable the required permissions:
 
 1. Go to **Settings → Actions → General**
 2. Under **Workflow permissions**, enable:
-   - "Read and write permissions"
-   - "Allow GitHub Actions to create and approve pull requests"
+    - "Read and write permissions"
+    - "Allow GitHub Actions to create and approve pull requests"
 
 ## License
 

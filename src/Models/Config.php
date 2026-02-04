@@ -9,6 +9,7 @@ class Config
     public function __construct(
         public readonly string $baseBranch = 'main',
         public readonly bool $changelog = true,
+        public readonly ?string $repository = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -16,6 +17,7 @@ class Config
         return new self(
             baseBranch: $data['baseBranch'] ?? 'main',
             changelog: $data['changelog'] ?? true,
+            repository: $data['repository'] ?? null,
         );
     }
 
@@ -24,6 +26,7 @@ class Config
         return [
             'baseBranch' => $this->baseBranch,
             'changelog' => $this->changelog,
+            'repository' => $this->repository,
         ];
     }
 }

@@ -140,6 +140,54 @@ class ChangelogGeneratorTest extends TestCase
         $this->assertLessThan($posFixes, $posFeatures);
     }
 
+    public function testIssueLinkingWithRepositoryUrl(): void
+    {
+        $this->generator->setRepositoryUrl('https://github.com/owner/repo');
+
+        $changesets = [
+            $this->createChangeset('patch', 'Fix bug. Fixes #123'),
+        ];
+
+        $this->generator->update('1.0.1', $changesets);
+
+        $content = file_get_contents($this->generator->getChangelogPath());
+
+        $this->assertStringContainsString('[#123](https://github.com/owner/repo/issues/123)', $content);
+    }
+
+    public function testIssueLinkingMultipleIssues(): void
+    {
+        $this->generator->setRepositoryUrl('https://github.com/owner/repo');
+
+        $changesets = [
+            $this->createChangeset('patch', 'Fix bugs #1, #2 and #3'),
+        ];
+
+        $this->generator->update('1.0.1', $changesets);
+
+        $content = file_get_contents($this->generator->getChangelogPath());
+
+        $this->assertStringContainsString('[#1](https://github.com/owner/repo/issues/1)', $content);
+        $this->assertStringContainsString('[#2](https://github.com/owner/repo/issues/2)', $content);
+        $this->assertStringContainsString('[#3](https://github.com/owner/repo/issues/3)', $content);
+    }
+
+    public function testNoIssueLinkingWithoutRepositoryUrl(): void
+    {
+        // Don't set repository URL and use temp dir without git
+        $changesets = [
+            $this->createChangeset('patch', 'Fix bug #123'),
+        ];
+
+        $this->generator->update('1.0.1', $changesets);
+
+        $content = file_get_contents($this->generator->getChangelogPath());
+
+        // Should contain the raw #123, not linked
+        $this->assertStringContainsString('#123', $content);
+        $this->assertStringNotContainsString('[#123]', $content);
+    }
+
     private function createChangeset(string $type, string $summary): Changeset
     {
         return new Changeset(
