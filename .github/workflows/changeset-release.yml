@@ -53,7 +53,8 @@ jobs:
       - name: Get new version
         id: version
         run: |
-          VERSION=$(grep -o '"version": *"[^"]*"' composer.json | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' || echo "")
+          # Get the first version header from CHANGELOG.md (e.g., "## 0.1.0")
+          VERSION=$(grep -m1 -oE '^## [0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
@@ -68,8 +69,7 @@ jobs:
             This PR was automatically created by the changeset release workflow.
 
             ### Changes
-            - Updated `composer.json` version to ${{ steps.version.outputs.version }}
-            - Updated `CHANGELOG.md` with all pending changesets
+            - Updated `CHANGELOG.md` with v${{ steps.version.outputs.version }} entry
             - Deleted processed changeset files
 
             ### Next Steps
