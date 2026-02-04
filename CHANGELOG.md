@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Add `champ generate` command to create changesets from conventional commits (hybrid mode like release-please).
 - Add custom version prefix for changelog headers via `versionPrefix` config option (e.g., `"v"` for `v1.0.0` format).
+
 ## v1.0.0 - 2026-02-04
 
 ### Breaking Changes
