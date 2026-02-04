@@ -10,3 +10,4 @@ Initial release of Change Champion - a changesets-inspired tool for PHP/Composer
 - `cc version` - Apply changesets and update CHANGELOG
 - `cc publish` - Create git tags
 - GitHub Actions workflow scaffolding with `--with-github-actions`
+
