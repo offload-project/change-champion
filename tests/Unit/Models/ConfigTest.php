@@ -20,8 +20,8 @@ class ConfigTest extends TestCase
 
         $this->assertSame('main', $config->baseBranch);
         $this->assertTrue($config->changelog);
-        $this->assertSame('changeset-release/', $config->releaseBranchPrefix);
-        $this->assertSame('', $config->versionPrefix);
+        $this->assertSame('release/', $config->releaseBranchPrefix);
+        $this->assertSame('v', $config->versionPrefix);
     }
 
     public function testCustomValues(): void
@@ -91,8 +91,8 @@ class ConfigTest extends TestCase
             'changelog' => true,
             'repository' => null,
             'sections' => Config::DEFAULT_SECTIONS,
-            'releaseBranchPrefix' => 'changeset-release/',
-            'versionPrefix' => '',
+            'releaseBranchPrefix' => 'release/',
+            'versionPrefix' => 'v',
         ], $array);
     }
 
@@ -111,8 +111,8 @@ class ConfigTest extends TestCase
             'changelog' => true,
             'repository' => 'https://github.com/owner/repo',
             'sections' => Config::DEFAULT_SECTIONS,
-            'releaseBranchPrefix' => 'changeset-release/',
-            'versionPrefix' => '',
+            'releaseBranchPrefix' => 'release/',
+            'versionPrefix' => 'v',
         ], $array);
     }
 
