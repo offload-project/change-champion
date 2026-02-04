@@ -18,8 +18,8 @@ jobs:
       - name: Read config
         id: config
         run: |
-          # Read release branch prefix from config (default: changeset-release/)
-          PREFIX=$(jq -r '.releaseBranchPrefix // "changeset-release/"' .changes/config.json)
+          # Read release branch prefix from config (default: release/)
+          PREFIX=$(jq -r '.releaseBranchPrefix // "release/"' .changes/config.json)
           echo "release_branch_prefix=$PREFIX" >> $GITHUB_OUTPUT
 
       - name: Check if release PR

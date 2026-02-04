@@ -62,9 +62,9 @@ class InitCommandTest extends TestCase
         $tester->execute(['--with-github-actions' => true]);
 
         $this->assertDirectoryExists($this->tempDir.'/.github/workflows');
-        $this->assertFileExists($this->tempDir.'/.github/workflows/changeset-check.yml');
-        $this->assertFileExists($this->tempDir.'/.github/workflows/changeset-release.yml');
-        $this->assertFileExists($this->tempDir.'/.github/workflows/changeset-publish.yml');
+        $this->assertFileExists($this->tempDir.'/.github/workflows/change-champ-check.yml');
+        $this->assertFileExists($this->tempDir.'/.github/workflows/change-champ-release.yml');
+        $this->assertFileExists($this->tempDir.'/.github/workflows/change-champ-publish.yml');
     }
 
     public function testInitWithGithubActionsDoesNotOverwriteExisting(): void
@@ -72,7 +72,7 @@ class InitCommandTest extends TestCase
         // Create existing workflow
         mkdir($this->tempDir.'/.github/workflows', 0o755, true);
         file_put_contents(
-            $this->tempDir.'/.github/workflows/changeset-check.yml',
+            $this->tempDir.'/.github/workflows/change-champ-check.yml',
             'existing content'
         );
 
@@ -85,12 +85,12 @@ class InitCommandTest extends TestCase
         // Should not overwrite existing file
         $this->assertSame(
             'existing content',
-            file_get_contents($this->tempDir.'/.github/workflows/changeset-check.yml')
+            file_get_contents($this->tempDir.'/.github/workflows/change-champ-check.yml')
         );
 
         // Should still create other files
-        $this->assertFileExists($this->tempDir.'/.github/workflows/changeset-release.yml');
-        $this->assertFileExists($this->tempDir.'/.github/workflows/changeset-publish.yml');
+        $this->assertFileExists($this->tempDir.'/.github/workflows/change-champ-release.yml');
+        $this->assertFileExists($this->tempDir.'/.github/workflows/change-champ-publish.yml');
     }
 
     public function testInitFailsWithoutComposerJson(): void
