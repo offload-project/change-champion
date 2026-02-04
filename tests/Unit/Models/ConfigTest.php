@@ -22,6 +22,7 @@ class ConfigTest extends TestCase
         $this->assertTrue($config->changelog);
         $this->assertSame('release/', $config->releaseBranchPrefix);
         $this->assertSame('v', $config->versionPrefix);
+        $this->assertFalse($config->draftRelease);
     }
 
     public function testCustomValues(): void
@@ -93,6 +94,7 @@ class ConfigTest extends TestCase
             'sections' => Config::DEFAULT_SECTIONS,
             'releaseBranchPrefix' => 'release/',
             'versionPrefix' => 'v',
+            'draftRelease' => false,
         ], $array);
     }
 
@@ -113,6 +115,7 @@ class ConfigTest extends TestCase
             'sections' => Config::DEFAULT_SECTIONS,
             'releaseBranchPrefix' => 'release/',
             'versionPrefix' => 'v',
+            'draftRelease' => false,
         ], $array);
     }
 
@@ -178,5 +181,14 @@ class ConfigTest extends TestCase
         ]);
 
         $this->assertSame('v', $config->versionPrefix);
+    }
+
+    public function testDraftRelease(): void
+    {
+        $config = Config::fromArray([
+            'draftRelease' => true,
+        ]);
+
+        $this->assertTrue($config->draftRelease);
     }
 }

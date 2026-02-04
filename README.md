@@ -248,7 +248,8 @@ Configuration is stored in `.changes/config.json`:
     "patch": "Fixes"
   },
   "releaseBranchPrefix": "release/",
-  "versionPrefix": "v"
+  "versionPrefix": "v",
+  "draftRelease": false
 }
 ```
 
@@ -260,6 +261,7 @@ Configuration is stored in `.changes/config.json`:
 - `sections` - Custom section headers for changelog (defaults shown above)
 - `releaseBranchPrefix` - Branch prefix for release PRs created by GitHub Actions (default: `release/`)
 - `versionPrefix` - Prefix for version numbers in changelog headers (default: `v` for `v1.0.0` format)
+- `draftRelease` - Create GitHub releases as drafts for manual publishing (default: `false`)
 
 ## Issue Linking
 
