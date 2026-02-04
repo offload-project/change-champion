@@ -39,7 +39,7 @@
     }
   },
   "bin": [
-    "bin/cc"
+    "bin/champ"
   ],
   "scripts": {
     "test": "vendor/bin/phpunit",

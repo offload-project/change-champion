@@ -54,15 +54,15 @@ class ConfigManager
 
             ## Adding a changeset
 
-            Run `cc add` to create a new changeset file interactively.
+            Run `champ add` to create a new changeset file interactively.
 
             ## Applying changesets
 
-            Run `cc version` to apply all pending changesets and generate changelog entries.
+            Run `champ version` to apply all pending changesets and generate changelog entries.
 
             ## Publishing
 
-            Run `cc publish` to create a git tag for the current version (read from CHANGELOG.md).
+            Run `champ publish` to create a git tag for the current version (read from CHANGELOG.md).
             README;
 
         file_put_contents($changesetDir.'/'.self::README_FILE, $readme."\n");
@@ -71,7 +71,7 @@ class ConfigManager
     public function getConfig(): Config
     {
         if (!$this->isInitialized()) {
-            throw new \RuntimeException('Changesets not initialized. Run "cc init" first.');
+            throw new \RuntimeException('Changesets not initialized. Run "champ init" first.');
         }
 
         $content = file_get_contents($this->getConfigPath());

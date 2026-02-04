@@ -27,7 +27,7 @@ class CheckCommand extends Command
         $configManager = new ConfigManager($basePath);
 
         if (!$configManager->isInitialized()) {
-            $io->error('Changesets not initialized. Run "cc init" first.');
+            $io->error('Changesets not initialized. Run "champ init" first.');
 
             return Command::FAILURE;
         }

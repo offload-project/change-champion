@@ -2,7 +2,7 @@ name: Changeset Check
 
 on:
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   check:
@@ -64,7 +64,7 @@ jobs:
             This PR does not include a changeset. If this change should be included in the changelog and trigger a release, please add one:
 
             \`\`\`bash
-            cc add
+            champ add
             \`\`\`
 
             If this change doesn't need a release (e.g., docs, tests, CI), you can ignore this message.

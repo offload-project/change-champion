@@ -29,7 +29,7 @@ class StatusCommand extends Command
         $versionCalculator = new VersionCalculator();
 
         if (!$configManager->isInitialized()) {
-            $io->error('Changesets not initialized. Run "cc init" first.');
+            $io->error('Changesets not initialized. Run "champ init" first.');
 
             return Command::FAILURE;
         }
@@ -48,7 +48,7 @@ class StatusCommand extends Command
         if (empty($changesets)) {
             $io->newLine();
             $io->note('No pending changesets found.');
-            $io->text('Run "cc add" to create a new changeset.');
+            $io->text('Run "champ add" to create a new changeset.');
 
             return Command::SUCCESS;
         }
@@ -82,7 +82,7 @@ class StatusCommand extends Command
             $io->table(['ID', 'Type', 'Summary'], $rows);
         }
 
-        $io->text('Run "cc version" to apply these changes.');
+        $io->text('Run "champ version" to apply these changes.');
 
         return Command::SUCCESS;
     }

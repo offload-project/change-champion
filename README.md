@@ -29,51 +29,51 @@ composer global require offload-project/change-champion
 
 ```bash
 # Initialize in your project
-cc init
+champ init
 
 # Create a changeset when you make changes
-cc add
+champ add
 
 # View pending changesets
-cc status
+champ status
 
 # Apply version bump and generate changelog
-cc version
+champ version
 
 # Create a git tag
-cc publish
+champ publish
 ```
 
 ## Commands
 
-### `cc init`
+### `champ init`
 
 Initialize change-champion in your project. Creates a `.changes` directory with configuration.
 
 ```bash
-cc init
+champ init
 
 # With GitHub Actions automation
-cc init --with-github-actions
+champ init --with-github-actions
 ```
 
 **Options:**
 
 - `--with-github-actions` - Also install GitHub Actions workflows for automation
 
-### `cc add`
+### `champ add`
 
 Create a new changeset. Run this after making changes that should be released.
 
 ```bash
 # Interactive mode
-cc add
+champ add
 
 # Non-interactive mode
-cc add --type=minor --message="Add user authentication feature"
+champ add --type=minor --message="Add user authentication feature"
 
 # Create empty changeset (useful for CI)
-cc add --empty
+champ add --empty
 ```
 
 **Options:**
@@ -82,35 +82,35 @@ cc add --empty
 - `--message`, `-m` - Summary of the change
 - `--empty` - Create an empty changeset
 
-### `cc status`
+### `champ status`
 
 Show pending changesets and the calculated next version.
 
 ```bash
-cc status
+champ status
 
 # Verbose output
-cc status -v
+champ status -v
 ```
 
-### `cc version`
+### `champ version`
 
 Apply all pending changesets: update `CHANGELOG.md` and delete the changeset files.
 
 ```bash
 # Interactive confirmation
-cc version
+champ version
 
 # Preview changes without applying
-cc version --dry-run
+champ version --dry-run
 
 # Skip changelog generation
-cc version --no-changelog
+champ version --no-changelog
 
 # Create a pre-release version
-cc version --prerelease alpha
-cc version --prerelease beta
-cc version --prerelease rc
+champ version --prerelease alpha
+champ version --prerelease beta
+champ version --prerelease rc
 ```
 
 **Options:**
@@ -123,60 +123,60 @@ cc version --prerelease rc
 
 ```bash
 # Create first alpha (1.0.0 → 1.1.0-alpha.1)
-cc version --prerelease alpha
+champ version --prerelease alpha
 
 # Bump alpha (1.1.0-alpha.1 → 1.1.0-alpha.2)
-cc version --prerelease alpha
+champ version --prerelease alpha
 
 # Move to beta (1.1.0-alpha.2 → 1.1.0-beta.1)
-cc version --prerelease beta
+champ version --prerelease beta
 
 # Move to RC (1.1.0-beta.1 → 1.1.0-rc.1)
-cc version --prerelease rc
+champ version --prerelease rc
 
 # Graduate to stable (1.1.0-rc.1 → 1.1.0)
-cc version
+champ version
 ```
 
-### `cc preview`
+### `champ preview`
 
 Preview the CHANGELOG entry that would be generated without making any changes.
 
 ```bash
 # Preview changelog entry
-cc preview
+champ preview
 
 # Preview with pre-release version
-cc preview --prerelease alpha
+champ preview --prerelease alpha
 ```
 
 **Options:**
 
 - `--prerelease`, `-p` - Preview as a pre-release version (alpha, beta, rc)
 
-### `cc check`
+### `champ check`
 
 Validate changeset files for correct format. Useful in CI to catch errors early.
 
 ```bash
-cc check
+champ check
 ```
 
 Returns exit code `0` if all changesets are valid, `1` if any are invalid.
 
-### `cc publish`
+### `champ publish`
 
 Create a git tag for the current version.
 
 ```bash
 # Create and push tag
-cc publish
+champ publish
 
 # Create tag without pushing
-cc publish --no-push
+champ publish --no-push
 
 # Preview without creating tag
-cc publish --dry-run
+champ publish --dry-run
 ```
 
 **Options:**
@@ -256,11 +256,11 @@ changeset, the version will be bumped as `minor`.
 ## Workflow
 
 1. Make changes to your code
-2. Run `cc add` to create a changeset describing your changes
+2. Run `champ add` to create a changeset describing your changes
 3. Commit the changeset file along with your code changes
-4. When ready to release, run `cc version` to bump versions and update changelog
+4. When ready to release, run `champ version` to bump versions and update changelog
 5. Commit the version bump
-6. Run `cc publish` to create a git tag
+6. Run `champ publish` to create a git tag
 7. Push the tag to trigger your release pipeline
 
 ## GitHub Actions Automation
@@ -268,7 +268,7 @@ changeset, the version will be bumped as `minor`.
 Install GitHub Actions workflows to automate your release process:
 
 ```bash
-cc init --with-github-actions
+champ init --with-github-actions
 ```
 
 This installs three workflows:
@@ -281,7 +281,7 @@ Comments on PRs that don't include a changeset, reminding contributors to add on
 
 When changesets are merged to `main`, automatically:
 
-- Runs `cc version` to bump the version and update changelog
+- Runs `champ version` to bump the version and update changelog
 - Creates a "Release vX.X.X" pull request
 
 ### `changeset-publish.yml`
