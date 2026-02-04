@@ -1,8 +1,9 @@
 name: Changeset Release
 
 on:
+  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - '.changes/*.md'
       - '!.changes/README.md'
@@ -32,36 +33,29 @@ jobs:
           PREFIX=$(jq -r '.releaseBranchPrefix // "changeset-release/"' .changes/config.json)
           echo "release_branch_prefix=$PREFIX" >> $GITHUB_OUTPUT
 
-      - name: Check for changesets
-        id: check
+      - name: Get version info
+        id: version
         run: |
-          # Count changeset files (excluding README.md)
+          # Get changeset count and next version from champ status
+          STATUS=$(./vendor/bin/champ status)
           COUNT=$(find .changes -name "*.md" ! -name "README.md" 2>/dev/null | wc -l | tr -d ' ')
-          echo "changeset_count=$COUNT" >> $GITHUB_OUTPUT
-          echo "has_changesets=$([[ $COUNT -gt 0 ]] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
 
           if [ "$COUNT" -gt 0 ]; then
-            echo "Found $COUNT changeset(s)"
+            echo "has_changesets=true" >> $GITHUB_OUTPUT
+            VERSION=$(echo "$STATUS" | grep "Next version:" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "Found $COUNT changeset(s), next version: $VERSION"
           else
+            echo "has_changesets=false" >> $GITHUB_OUTPUT
             echo "No changesets found"
           fi
 
       - name: Run champ version
-        if: steps.check.outputs.has_changesets == 'true'
-        run: |
-          # Run version command non-interactively
-          echo "y" | ./vendor/bin/champ version
-
-      - name: Get new version
-        if: steps.check.outputs.has_changesets == 'true'
-        id: version
-        run: |
-          # Get the first version header from CHANGELOG.md (e.g., "## 0.1.0")
-          VERSION=$(grep -m1 -oE '^## [0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        if: steps.version.outputs.has_changesets == 'true'
+        run: echo "y" | ./vendor/bin/champ version
 
       - name: Create Pull Request
-        if: steps.check.outputs.has_changesets == 'true'
+        if: steps.version.outputs.has_changesets == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
