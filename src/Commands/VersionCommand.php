@@ -74,7 +74,11 @@ class VersionCommand extends Command
 
         // Determine bump description
         if (null !== $prerelease) {
-            $bumpType = $isCurrentPrerelease ? "pre-release ({$prerelease})" : "{$versionCalculator->getHighestBumpType($changesets)} + {$prerelease}";
+            if ($isCurrentPrerelease || empty($changesets)) {
+                $bumpType = "pre-release ({$prerelease})";
+            } else {
+                $bumpType = "{$versionCalculator->getHighestBumpType($changesets)} + {$prerelease}";
+            }
         } elseif ($isCurrentPrerelease) {
             $bumpType = 'stable release';
         } else {
