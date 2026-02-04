@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-A tool to manage versioning and changelogs for Composer packages, inspired by [changesets](https://github.com/changesets/changesets).
+A tool to manage versioning and changelogs for Composer packages, inspired by <a href="https://github.com/changesets/changesets">changesets</a>.
 </p>
 
 <p align="center">
