@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.3.0 - 2026-02-04
+
+### Features
+
+- Update config defaults: releaseBranchPrefix to 'release/' and versionPrefix to 'v'. Rename workflow files to change-champ-*.yml prefix.
+
 ## v1.2.0 - 2026-02-04
 
 ### Features
