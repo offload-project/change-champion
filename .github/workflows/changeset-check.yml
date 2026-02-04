@@ -1,0 +1,80 @@
+name: Changeset Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    name: Check for changeset
+    # Skip release PRs - they don't need changesets
+    if: ${{ !startsWith(github.head_ref, 'release/') && !startsWith(github.head_ref, 'changeset-release/') }}
+    runs-on: ubuntu-latest
+    # Never block the PR - this is informational only
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for changeset files
+        id: changeset-check
+        run: |
+          # Get list of changed files in this PR
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null || echo "")
+
+          # Check if any .changes/*.md files were added (excluding README.md)
+          CHANGESET_FILES=$(echo "$CHANGED_FILES" | grep -E '^\.changes/.*\.md$' | grep -v 'README.md' || true)
+
+          if [ -z "$CHANGESET_FILES" ]; then
+            echo "has_changeset=false" >> $GITHUB_OUTPUT
+            echo "No changeset found in this PR"
+          else
+            echo "has_changeset=true" >> $GITHUB_OUTPUT
+            echo "Found changesets:"
+            echo "$CHANGESET_FILES"
+          fi
+
+      - name: Comment on PR
+        if: steps.changeset-check.outputs.has_changeset == 'false'
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const body = `### 📝 No Changeset Found
+
+            This PR does not include a changeset. If this change should be included in the changelog and trigger a release, please add one:
+
+            \`\`\`bash
+            cc add
+            \`\`\`
+
+            If this change doesn't need a release (e.g., docs, tests, CI), you can ignore this message.
+
+            <details>
+            <summary>What is a changeset?</summary>
+
+            A changeset is a markdown file in the \`.changes/\` directory that describes what changed and how it affects the version number (major, minor, or patch).
+
+            </details>`;
+
+            // Check if we already commented
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('No Changeset Found')
+            );
+
+            if (!botComment) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

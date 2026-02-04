@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+
+namespace ChangeChampion;
+
+use ChangeChampion\Commands\AddCommand;
+use ChangeChampion\Commands\InitCommand;
+use ChangeChampion\Commands\PublishCommand;
+use ChangeChampion\Commands\StatusCommand;
+use ChangeChampion\Commands\VersionCommand;
+use Symfony\Component\Console\Application as BaseApplication;
+
+class Application extends BaseApplication
+{
+    public const VERSION = '1.0.0';
+
+    public function __construct()
+    {
+        parent::__construct('change-champion', self::VERSION);
+
+        $this->addCommands([
+            new InitCommand(),
+            new AddCommand(),
+            new StatusCommand(),
+            new VersionCommand(),
+            new PublishCommand(),
+        ]);
+    }
+}
