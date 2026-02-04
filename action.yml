@@ -1,0 +1,169 @@
+name: 'Change Champion Action'
+description: 'Create release PRs and publish tags using change-champion'
+author: 'Offload Project'
+
+branding:
+  icon: 'package'
+  color: 'yellow'
+
+inputs:
+  version:
+    description: 'Version of change-champion to use'
+    required: false
+    default: 'latest'
+  publish:
+    description: 'Whether to create git tag when release PR is merged'
+    required: false
+    default: 'true'
+  token:
+    description: 'GitHub token for creating PRs and releases'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  published:
+    description: 'Whether a release was published'
+    value: ${{ steps.action.outputs.published }}
+  version:
+    description: 'The version that was released'
+    value: ${{ steps.action.outputs.version }}
+  hasChangesets:
+    description: 'Whether there are pending changesets'
+    value: ${{ steps.action.outputs.hasChangesets }}
+  pullRequestNumber:
+    description: 'The pull request number if one was created'
+    value: ${{ steps.action.outputs.pullRequestNumber }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        tools: composer:v2
+
+    - name: Install change-champion
+      shell: bash
+      run: |
+        composer global require offload-project/change-champion:${{ inputs.version == 'latest' && '*' || inputs.version }}
+        echo "$(composer global config bin-dir --absolute)" >> $GITHUB_PATH
+
+    - name: Check if release PR merge
+      id: release-check
+      shell: bash
+      run: |
+        if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.event.pull_request.merged }}" == "true" ]]; then
+          HEAD_REF="${{ github.event.pull_request.head.ref }}"
+          if [[ "$HEAD_REF" == changeset-release/* ]] || [[ "$HEAD_REF" == release/* ]]; then
+            echo "isReleasePR=true" >> $GITHUB_OUTPUT
+          else
+            echo "isReleasePR=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "isReleasePR=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Publish release
+      if: steps.release-check.outputs.isReleasePR == 'true' && inputs.publish == 'true'
+      id: publish
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        # Get version from changelog
+        VERSION=$(grep -m1 -oE '^## v?[0-9]+\.[0-9]+\.[0-9]+' CHANGELOG.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+        # Create and push tag
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git tag -a "v$VERSION" -m "Release v$VERSION"
+        git push origin "v$VERSION"
+
+        echo "published=true" >> $GITHUB_OUTPUT
+        echo "hasChangesets=false" >> $GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      if: steps.publish.outputs.published == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const version = '${{ steps.publish.outputs.version }}';
+          const tag = `v${version}`;
+          const fs = require('fs');
+
+          let changelog = `Release ${tag}`;
+          try {
+            const content = fs.readFileSync('CHANGELOG.md', 'utf8');
+            const regex = new RegExp(`## v?${version}[\\s\\S]*?(?=## v?\\d|$)`);
+            const match = content.match(regex);
+            if (match) changelog = match[0].trim();
+          } catch (e) {}
+
+          await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: tag,
+            name: tag,
+            body: changelog,
+            draft: false,
+            prerelease: false
+          });
+
+    - name: Run change-champion action
+      if: steps.release-check.outputs.isReleasePR != 'true'
+      id: action
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        # Check for changesets
+        STATUS=$(champ status 2>&1) || true
+
+        if echo "$STATUS" | grep -q "No pending changesets"; then
+          echo "hasChangesets=false" >> $GITHUB_OUTPUT
+          echo "No changesets found"
+        else
+          echo "hasChangesets=true" >> $GITHUB_OUTPUT
+          VERSION=$(echo "$STATUS" | grep "Next version:" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Found changesets, next version: $VERSION"
+
+          # Run version command
+          echo "y" | champ version
+
+          echo "published=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Create Pull Request
+      if: steps.action.outputs.hasChangesets == 'true'
+      id: pr
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ inputs.token }}
+        commit-message: 'chore: release v${{ steps.action.outputs.version }}'
+        title: 'chore: release v${{ steps.action.outputs.version }}'
+        body: |
+          ## Release v${{ steps.action.outputs.version }}
+
+          This PR was automatically created by change-champion.
+
+          ### Next Steps
+          1. Review the changes
+          2. Merge this PR
+          3. The release will be tagged automatically
+
+          ---
+          🤖 Generated by [change-champion](https://github.com/offload-project/change-champion)
+        branch: changeset-release/v${{ steps.action.outputs.version }}
+        delete-branch: true
+        labels: |
+          release
+          automated
+
+    - name: Set PR output
+      if: steps.pr.outputs.pull-request-number
+      shell: bash
+      run: echo "pullRequestNumber=${{ steps.pr.outputs.pull-request-number }}" >> $GITHUB_OUTPUT
