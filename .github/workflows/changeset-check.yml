@@ -12,9 +12,7 @@ jobs:
     # Only run if triggered workflow succeeded and this is a PR (not a push)
     if: >
       github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request' &&
-      !startsWith(github.event.workflow_run.head_branch, 'release/') &&
-      !startsWith(github.event.workflow_run.head_branch, 'changeset-release/')
+      github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
     # Never block the PR - this is informational only
     continue-on-error: true
@@ -24,7 +22,28 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
+      - name: Read config
+        id: config
+        run: |
+          # Read release branch prefix from config (default: changeset-release/)
+          PREFIX=$(jq -r '.releaseBranchPrefix // "changeset-release/"' .changes/config.json)
+          echo "release_branch_prefix=$PREFIX" >> $GITHUB_OUTPUT
+
+      - name: Check if release PR
+        id: release-check
+        run: |
+          # Skip release PRs - they don't need changesets
+          HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+          PREFIX="${{ steps.config.outputs.release_branch_prefix }}"
+          if [[ "$HEAD_BRANCH" == release/* ]] || [[ "$HEAD_BRANCH" == ${PREFIX}* ]]; then
+            echo "is_release=true" >> $GITHUB_OUTPUT
+            echo "Skipping release PR"
+          else
+            echo "is_release=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Get PR number
+        if: steps.release-check.outputs.is_release == 'false'
         id: pr
         uses: actions/github-script@v7
         with:
@@ -41,7 +60,7 @@ jobs:
             }
 
       - name: Check for changeset files
-        if: steps.pr.outputs.number
+        if: steps.release-check.outputs.is_release == 'false' && steps.pr.outputs.number
         id: changeset-check
         run: |
           # Get list of changed files in this PR
@@ -60,7 +79,7 @@ jobs:
           fi
 
       - name: Comment on PR
-        if: steps.pr.outputs.number && steps.changeset-check.outputs.has_changeset == 'false'
+        if: steps.release-check.outputs.is_release == 'false' && steps.pr.outputs.number && steps.changeset-check.outputs.has_changeset == 'false'
         uses: actions/github-script@v7
         continue-on-error: true
         with:
