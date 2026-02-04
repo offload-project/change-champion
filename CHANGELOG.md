@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.0 - 2026-02-04
+
+### Breaking Changes
+
+- Rename CLI command from `cc` to `champ`.
 ## 0.7.0 - 2026-02-04
 
 ### Features
