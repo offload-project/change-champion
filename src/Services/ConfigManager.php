@@ -120,7 +120,7 @@ class ConfigManager
         // Get version from git tags (like release-please does for PHP)
         $version = $this->getVersionFromGitTags();
 
-        if ($version !== null) {
+        if (null !== $version) {
             return $version;
         }
 
@@ -130,15 +130,22 @@ class ConfigManager
         return $composerJson['version'] ?? '0.0.0';
     }
 
+    public function getPackageName(): string
+    {
+        $composerJson = $this->getComposerJson();
+
+        return $composerJson['name'] ?? 'unknown';
+    }
+
     private function getVersionFromGitTags(): ?string
     {
-        // Get the latest semver tag
+        // Get the latest semver tag from the project directory
         $output = [];
         $returnCode = 0;
 
-        exec('git describe --tags --abbrev=0 2>/dev/null', $output, $returnCode);
+        exec('git -C '.escapeshellarg($this->basePath).' describe --tags --abbrev=0 2>/dev/null', $output, $returnCode);
 
-        if ($returnCode !== 0 || empty($output)) {
+        if (0 !== $returnCode || empty($output)) {
             return null;
         }
 
@@ -149,18 +156,11 @@ class ConfigManager
             $tag = substr($tag, 1);
         }
 
-        // Validate it looks like a semver version
-        if (preg_match('/^\d+\.\d+\.\d+/', $tag)) {
+        // Validate it looks like a semver version (with optional pre-release)
+        if (preg_match('/^\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?$/', $tag)) {
             return $tag;
         }
 
         return null;
-    }
-
-    public function getPackageName(): string
-    {
-        $composerJson = $this->getComposerJson();
-
-        return $composerJson['name'] ?? 'unknown';
     }
 }

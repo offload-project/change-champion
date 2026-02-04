@@ -29,8 +29,8 @@ class ChangelogGenerator
             return null;
         }
 
-        // Match first version header (e.g., "## 1.2.3" or "## 1.2.3 - 2024-01-01")
-        if (preg_match('/^## (\d+\.\d+\.\d+)/m', $content, $matches)) {
+        // Match first version header (e.g., "## 1.2.3" or "## 1.2.3-alpha.1 - 2024-01-01")
+        if (preg_match('/^## (\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?)/m', $content, $matches)) {
             return $matches[1];
         }
 
@@ -135,8 +135,8 @@ class ChangelogGenerator
             return "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n".$newEntry;
         }
 
-        // Find the first version header (## x.x.x) and insert before it
-        if (preg_match('/^(# .+?\n\n(?:.*?\n\n)?)(## \d+\.\d+\.\d+.*)/s', $existingContent, $matches)) {
+        // Find the first version header (## x.x.x or ## x.x.x-prerelease.n) and insert before it
+        if (preg_match('/^(# .+?\n\n(?:.*?\n\n)?)(## \d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?.*)/s', $existingContent, $matches)) {
             return $matches[1].$newEntry.$matches[2];
         }
 
