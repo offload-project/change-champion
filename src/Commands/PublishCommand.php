@@ -50,7 +50,7 @@ class PublishCommand extends Command
         $changelogGenerator = new ChangelogGenerator($basePath);
         $version = $changelogGenerator->getLatestVersion();
 
-        if ($version === null) {
+        if (null === $version) {
             $io->error('No version found in CHANGELOG.md. Run "cc version" first.');
 
             return Command::FAILURE;

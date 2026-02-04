@@ -21,9 +21,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class VersionCommand extends Command
 {
+    private const VALID_PRERELEASES = ['alpha', 'beta', 'rc'];
+
     protected function configure(): void
     {
         $this
+            ->addOption('prerelease', 'p', InputOption::VALUE_REQUIRED, 'Create pre-release version (alpha, beta, rc)')
             ->addOption('no-changelog', null, InputOption::VALUE_NONE, 'Skip changelog generation')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Show what would be done without making changes');
     }
@@ -45,18 +48,42 @@ class VersionCommand extends Command
         }
 
         $changesets = $changesetManager->getAll();
+        $prerelease = $input->getOption('prerelease');
 
-        if (empty($changesets)) {
+        // Validate prerelease option
+        if (null !== $prerelease && !in_array($prerelease, self::VALID_PRERELEASES, true)) {
+            $io->error('Invalid prerelease type. Use: alpha, beta, or rc');
+
+            return Command::FAILURE;
+        }
+
+        $config = $configManager->getConfig();
+        $currentVersion = $configManager->getCurrentVersion();
+        $parsed = $versionCalculator->parseVersion($currentVersion);
+        $isCurrentPrerelease = null !== $parsed['prerelease'];
+
+        // Allow no changesets if we're bumping pre-release or graduating to stable
+        if (empty($changesets) && !$isCurrentPrerelease && null === $prerelease) {
             $io->warning('No changesets found. Nothing to do.');
 
             return Command::SUCCESS;
         }
 
-        $config = $configManager->getConfig();
-        $currentVersion = $configManager->getCurrentVersion();
-        $nextVersion = $versionCalculator->calculateNextVersion($currentVersion, $changesets);
-        $bumpType = $versionCalculator->getHighestBumpType($changesets);
+        $nextVersion = $versionCalculator->calculateNextVersion($currentVersion, $changesets, $prerelease);
         $packageName = $configManager->getPackageName();
+
+        // Determine bump description
+        if (null !== $prerelease) {
+            if ($isCurrentPrerelease || empty($changesets)) {
+                $bumpType = "pre-release ({$prerelease})";
+            } else {
+                $bumpType = "{$versionCalculator->getHighestBumpType($changesets)} + {$prerelease}";
+            }
+        } elseif ($isCurrentPrerelease) {
+            $bumpType = 'stable release';
+        } else {
+            $bumpType = $versionCalculator->getHighestBumpType($changesets);
+        }
 
         $dryRun = $input->getOption('dry-run');
         $skipChangelog = $input->getOption('no-changelog') || !$config->changelog;
