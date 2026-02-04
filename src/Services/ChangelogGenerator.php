@@ -227,7 +227,7 @@ class ChangelogGenerator
 
         // Find the first version header (## x.x.x, ## vx.x.x, or ## x.x.x-prerelease.n) and insert before it
         if (preg_match('/^(# .+?\n\n(?:.*?\n\n)?)(## v?\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?.*)/s', $existingContent, $matches)) {
-            return $matches[1].$newEntry.$matches[2];
+            return $matches[1].$newEntry."\n".$matches[2];
         }
 
         // If no version header found, just append after any header content
