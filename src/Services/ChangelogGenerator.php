@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace ChangeChampion\Services;
 
 use ChangeChampion\Models\Changeset;
+use ChangeChampion\Models\Config;
 
 class ChangelogGenerator
 {
     private ?string $repositoryUrl = null;
+    private array $sections = Config::DEFAULT_SECTIONS;
 
     public function __construct(
         private readonly string $basePath,
@@ -21,6 +23,14 @@ class ChangelogGenerator
     public function setRepositoryUrl(?string $url): void
     {
         $this->repositoryUrl = $url;
+    }
+
+    /**
+     * Set custom section headers.
+     */
+    public function setSections(array $sections): void
+    {
+        $this->sections = $sections;
     }
 
     /**
@@ -99,37 +109,27 @@ class ChangelogGenerator
             $grouped[$changeset->type][] = $changeset;
         }
 
-        // Add breaking changes (major)
-        if (!empty($grouped[Changeset::TYPE_MAJOR])) {
-            $lines[] = '### Breaking Changes';
-            $lines[] = '';
-            foreach ($grouped[Changeset::TYPE_MAJOR] as $changeset) {
-                $lines[] = '- '.$this->formatSummary($changeset->summary);
+        // Add sections in order: major, minor, patch
+        foreach ([Changeset::TYPE_MAJOR, Changeset::TYPE_MINOR, Changeset::TYPE_PATCH] as $type) {
+            if (!empty($grouped[$type])) {
+                $lines[] = '### '.$this->getSectionHeader($type);
+                $lines[] = '';
+                foreach ($grouped[$type] as $changeset) {
+                    $lines[] = '- '.$this->formatSummary($changeset->summary);
+                }
+                $lines[] = '';
             }
-            $lines[] = '';
-        }
-
-        // Add features (minor)
-        if (!empty($grouped[Changeset::TYPE_MINOR])) {
-            $lines[] = '### Features';
-            $lines[] = '';
-            foreach ($grouped[Changeset::TYPE_MINOR] as $changeset) {
-                $lines[] = '- '.$this->formatSummary($changeset->summary);
-            }
-            $lines[] = '';
-        }
-
-        // Add fixes (patch)
-        if (!empty($grouped[Changeset::TYPE_PATCH])) {
-            $lines[] = '### Fixes';
-            $lines[] = '';
-            foreach ($grouped[Changeset::TYPE_PATCH] as $changeset) {
-                $lines[] = '- '.$this->formatSummary($changeset->summary);
-            }
-            $lines[] = '';
         }
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * Get section header for a changeset type.
+     */
+    private function getSectionHeader(string $type): string
+    {
+        return $this->sections[$type] ?? ucfirst($type);
     }
 
     /**

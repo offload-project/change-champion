@@ -88,6 +88,7 @@ class ConfigTest extends TestCase
             'baseBranch' => 'develop',
             'changelog' => true,
             'repository' => null,
+            'sections' => Config::DEFAULT_SECTIONS,
         ], $array);
     }
 
@@ -105,7 +106,40 @@ class ConfigTest extends TestCase
             'baseBranch' => 'main',
             'changelog' => true,
             'repository' => 'https://github.com/owner/repo',
+            'sections' => Config::DEFAULT_SECTIONS,
         ], $array);
+    }
+
+    public function testCustomSections(): void
+    {
+        $customSections = [
+            'major' => 'BREAKING CHANGES',
+            'minor' => 'Added',
+            'patch' => 'Fixed',
+        ];
+
+        $config = Config::fromArray([
+            'sections' => $customSections,
+        ]);
+
+        $this->assertSame($customSections, $config->sections);
+        $this->assertSame('BREAKING CHANGES', $config->getSectionHeader('major'));
+        $this->assertSame('Added', $config->getSectionHeader('minor'));
+        $this->assertSame('Fixed', $config->getSectionHeader('patch'));
+    }
+
+    public function testPartialSectionsOverride(): void
+    {
+        $config = Config::fromArray([
+            'sections' => [
+                'minor' => 'New Features',
+            ],
+        ]);
+
+        // Should merge with defaults
+        $this->assertSame('Breaking Changes', $config->getSectionHeader('major'));
+        $this->assertSame('New Features', $config->getSectionHeader('minor'));
+        $this->assertSame('Fixes', $config->getSectionHeader('patch'));
     }
 
     public function testRoundTrip(): void

@@ -1,12 +1,17 @@
-# Change Champion
+<p align="center">
+<img src="art/logo.svg" alt="Change Champion" width="250">
+</p>
 
-![Test Status](https://img.shields.io/github/actions/workflow/status/offload-project/change-champion/tests.yml?branch=main&label=tests)
-![Packagist Downloads](https://img.shields.io/packagist/dt/offload-project/change-champion)
-![Packagist Version](https://img.shields.io/packagist/v/offload-project/change-champion)
-![License](https://img.shields.io/github/license/offload-project/change-champion)
+<p align="center">
+A tool to manage versioning and changelogs for Composer packages, inspired by [changesets](https://github.com/changesets/changesets).
+</p>
 
-A tool to manage versioning and changelogs for Composer packages, inspired
-by [changesets](https://github.com/changesets/changesets).
+<p align="center">
+    <a href="https://github.com/offload-project/change-champion/actions"><img src="https://img.shields.io/github/actions/workflow/status/offload-project/change-champion/tests.yml?branch=main&style=flat-square&label=tests" alt="Test Status"></a>
+    <a href="https://packagist.org/packages/offload-project/change-champion"><img src="https://img.shields.io/packagist/dt/offload-project/change-champion.svg?style=flat-square" alt="Packagist Downloads"></a>
+    <a href="https://packagist.org/packages/offload-project/change-champion"><img src="https://img.shields.io/packagist/v/offload-project/change-champion.svg?style=flat-square" alt="Packagist Version"></a>
+    <a href="https://packagist.org/packages/offload-project/change-champion"><img src="https://img.shields.io/github/license/offload-project/change-champion.svg?style=flat-square" alt="License"></a>
+</p>
 
 ## Installation
 
@@ -199,7 +204,12 @@ Configuration is stored in `.changes/config.json`:
 {
   "baseBranch": "main",
   "changelog": true,
-  "repository": "https://github.com/owner/repo"
+  "repository": "https://github.com/owner/repo",
+  "sections": {
+    "major": "Breaking Changes",
+    "minor": "Features",
+    "patch": "Fixes"
+  }
 }
 ```
 
@@ -208,6 +218,7 @@ Configuration is stored in `.changes/config.json`:
 - `baseBranch` - The base branch for comparisons (default: `main`)
 - `changelog` - Whether to generate changelog entries (default: `true`)
 - `repository` - Repository URL for linking issues (auto-detected from git remote if not set)
+- `sections` - Custom section headers for changelog (defaults shown above)
 
 ## Issue Linking
 
