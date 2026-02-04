@@ -128,6 +128,22 @@ cc version --prerelease rc
 cc version
 ```
 
+### `cc preview`
+
+Preview the CHANGELOG entry that would be generated without making any changes.
+
+```bash
+# Preview changelog entry
+cc preview
+
+# Preview with pre-release version
+cc preview --prerelease alpha
+```
+
+**Options:**
+
+- `--prerelease`, `-p` - Preview as a pre-release version (alpha, beta, rc)
+
 ### `cc check`
 
 Validate changeset files for correct format. Useful in CI to catch errors early.
