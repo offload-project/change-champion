@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.4.0 - 2026-02-04
+
+### Features
+
+- Update default PHP version to 8.2 in GitHub Action and workflow templates
+
 ## v1.3.1 - 2026-02-04
 
 ### Fixes
