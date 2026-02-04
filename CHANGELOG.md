@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.7.0 - 2026-02-04
+
+### Features
+
+- Add configurable release branch prefix
 ## 0.6.0 - 2026-02-04
 
 ### Features
