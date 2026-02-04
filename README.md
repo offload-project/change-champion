@@ -85,8 +85,7 @@ cc status -v
 
 ### `cc version`
 
-Apply all pending changesets: bump the version in `composer.json`, update `CHANGELOG.md`, and delete the changeset
-files.
+Apply all pending changesets: update `CHANGELOG.md` and delete the changeset files.
 
 ```bash
 # Interactive confirmation
@@ -97,12 +96,47 @@ cc version --dry-run
 
 # Skip changelog generation
 cc version --no-changelog
+
+# Create a pre-release version
+cc version --prerelease alpha
+cc version --prerelease beta
+cc version --prerelease rc
 ```
 
 **Options:**
 
 - `--dry-run` - Show what would be done without making changes
 - `--no-changelog` - Skip changelog generation
+- `--prerelease`, `-p` - Create a pre-release version (alpha, beta, rc)
+
+**Pre-release workflow:**
+
+```bash
+# Create first alpha (1.0.0 → 1.1.0-alpha.1)
+cc version --prerelease alpha
+
+# Bump alpha (1.1.0-alpha.1 → 1.1.0-alpha.2)
+cc version --prerelease alpha
+
+# Move to beta (1.1.0-alpha.2 → 1.1.0-beta.1)
+cc version --prerelease beta
+
+# Move to RC (1.1.0-beta.1 → 1.1.0-rc.1)
+cc version --prerelease rc
+
+# Graduate to stable (1.1.0-rc.1 → 1.1.0)
+cc version
+```
+
+### `cc check`
+
+Validate changeset files for correct format. Useful in CI to catch errors early.
+
+```bash
+cc check
+```
+
+Returns exit code `0` if all changesets are valid, `1` if any are invalid.
 
 ### `cc publish`
 
