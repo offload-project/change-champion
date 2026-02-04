@@ -22,7 +22,7 @@ class VersionCalculator
 
         // If graduating from pre-release to stable (no prerelease flag, but current has prerelease)
         if (null === $prerelease && null !== $parsed['prerelease']) {
-            // Strip pre-release, return stable version
+            // If there are changesets, apply them starting from the stable base
             return sprintf('%d.%d.%d', $parsed['major'], $parsed['minor'], $parsed['patch']);
         }
 
