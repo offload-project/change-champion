@@ -57,6 +57,7 @@ class PreviewCommand extends Command
 
         $config = $configManager->getConfig();
         $changelogGenerator->setRepositoryUrl($config->repository);
+        $changelogGenerator->setSections($config->sections);
         $currentVersion = $configManager->getCurrentVersion();
         $parsed = $versionCalculator->parseVersion($currentVersion);
         $isCurrentPrerelease = null !== $parsed['prerelease'];
