@@ -11,6 +11,7 @@ class ChangelogGenerator
 {
     private ?string $repositoryUrl = null;
     private array $sections = Config::DEFAULT_SECTIONS;
+    private string $versionPrefix = '';
 
     public function __construct(
         private readonly string $basePath,
@@ -31,6 +32,14 @@ class ChangelogGenerator
     public function setSections(array $sections): void
     {
         $this->sections = $sections;
+    }
+
+    /**
+     * Set version prefix for changelog headers (e.g., "v" for v1.0.0).
+     */
+    public function setVersionPrefix(string $prefix): void
+    {
+        $this->versionPrefix = $prefix;
     }
 
     /**
@@ -62,8 +71,8 @@ class ChangelogGenerator
             return null;
         }
 
-        // Match first version header (e.g., "## 1.2.3" or "## 1.2.3-alpha.1 - 2024-01-01")
-        if (preg_match('/^## (\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?)/m', $content, $matches)) {
+        // Match first version header (e.g., "## 1.2.3", "## v1.2.3", or "## 1.2.3-alpha.1 - 2024-01-01")
+        if (preg_match('/^## v?(\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?)/m', $content, $matches)) {
             return $matches[1];
         }
 
@@ -95,7 +104,7 @@ class ChangelogGenerator
     {
         $date = date('Y-m-d');
         $lines = [];
-        $lines[] = "## {$version} - {$date}";
+        $lines[] = "## {$this->versionPrefix}{$version} - {$date}";
         $lines[] = '';
 
         // Group changesets by type
@@ -216,8 +225,8 @@ class ChangelogGenerator
             return "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\n".$newEntry;
         }
 
-        // Find the first version header (## x.x.x or ## x.x.x-prerelease.n) and insert before it
-        if (preg_match('/^(# .+?\n\n(?:.*?\n\n)?)(## \d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?.*)/s', $existingContent, $matches)) {
+        // Find the first version header (## x.x.x, ## vx.x.x, or ## x.x.x-prerelease.n) and insert before it
+        if (preg_match('/^(# .+?\n\n(?:.*?\n\n)?)(## v?\d+\.\d+\.\d+(?:-(?:alpha|beta|rc)\.\d+)?.*)/s', $existingContent, $matches)) {
             return $matches[1].$newEntry.$matches[2];
         }
 

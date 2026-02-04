@@ -18,6 +18,7 @@ class Config
         public readonly ?string $repository = null,
         public readonly array $sections = self::DEFAULT_SECTIONS,
         public readonly string $releaseBranchPrefix = 'changeset-release/',
+        public readonly string $versionPrefix = '',
     ) {}
 
     public static function fromArray(array $data): self
@@ -30,6 +31,7 @@ class Config
             repository: $data['repository'] ?? null,
             sections: $sections,
             releaseBranchPrefix: $data['releaseBranchPrefix'] ?? 'changeset-release/',
+            versionPrefix: $data['versionPrefix'] ?? '',
         );
     }
 
@@ -41,6 +43,7 @@ class Config
             'repository' => $this->repository,
             'sections' => $this->sections,
             'releaseBranchPrefix' => $this->releaseBranchPrefix,
+            'versionPrefix' => $this->versionPrefix,
         ];
     }
 
