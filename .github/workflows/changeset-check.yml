@@ -1,90 +1,55 @@
 name: Changeset Check
 
 on:
-  workflow_run:
-    workflows: [ Tests, Lint ]
-    types: [ completed ]
-    branches: [ main ]
+  pull_request:
+    branches: [main]
 
 jobs:
   check:
     name: Check for changeset
-    # Only run if triggered workflow succeeded and this is a PR (not a push)
-    if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request'
     runs-on: ubuntu-latest
-    # Never block the PR - this is informational only
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
       - name: Read config
         id: config
         run: |
-          # Read release branch prefix from config (default: changeset-release/)
           PREFIX=$(jq -r '.releaseBranchPrefix // "changeset-release/"' .changes/config.json)
           echo "release_branch_prefix=$PREFIX" >> $GITHUB_OUTPUT
 
       - name: Check if release PR
         id: release-check
         run: |
-          # Skip release PRs - they don't need changesets
-          HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+          HEAD_REF="${{ github.head_ref }}"
           PREFIX="${{ steps.config.outputs.release_branch_prefix }}"
-          if [[ "$HEAD_BRANCH" == release/* ]] || [[ "$HEAD_BRANCH" == ${PREFIX}* ]]; then
+          if [[ "$HEAD_REF" == release/* ]] || [[ "$HEAD_REF" == ${PREFIX}* ]]; then
             echo "is_release=true" >> $GITHUB_OUTPUT
-            echo "Skipping release PR"
           else
             echo "is_release=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Get PR number
-        if: steps.release-check.outputs.is_release == 'false'
-        id: pr
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prs = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${context.payload.workflow_run.head_branch}`,
-              state: 'open'
-            });
-            if (prs.data.length > 0) {
-              core.setOutput('number', prs.data[0].number);
-              core.setOutput('base_ref', prs.data[0].base.ref);
-            }
-
       - name: Check for changeset files
-        if: steps.release-check.outputs.is_release == 'false' && steps.pr.outputs.number
+        if: steps.release-check.outputs.is_release == 'false'
         id: changeset-check
         run: |
-          # Get list of changed files in this PR
-          CHANGED_FILES=$(git diff --name-only origin/${{ steps.pr.outputs.base_ref }}...HEAD 2>/dev/null || echo "")
-
-          # Check if any .changes/*.md files were added (excluding README.md)
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD 2>/dev/null || echo "")
           CHANGESET_FILES=$(echo "$CHANGED_FILES" | grep -E '^\.changes/.*\.md$' | grep -v 'README.md' || true)
 
           if [ -z "$CHANGESET_FILES" ]; then
             echo "has_changeset=false" >> $GITHUB_OUTPUT
-            echo "No changeset found in this PR"
           else
             echo "has_changeset=true" >> $GITHUB_OUTPUT
-            echo "Found changesets:"
-            echo "$CHANGESET_FILES"
           fi
 
       - name: Comment on PR
-        if: steps.release-check.outputs.is_release == 'false' && steps.pr.outputs.number && steps.changeset-check.outputs.has_changeset == 'false'
+        if: steps.release-check.outputs.is_release == 'false' && steps.changeset-check.outputs.has_changeset == 'false'
         uses: actions/github-script@v7
         continue-on-error: true
         with:
           script: |
-            const prNumber = ${{ steps.pr.outputs.number }};
             const body = `### 📝 No Changeset Found
 
             This PR does not include a changeset. If this change should be included in the changelog and trigger a release, please add one:
@@ -93,20 +58,12 @@ jobs:
             champ add
             \`\`\`
 
-            If this change doesn't need a release (e.g., docs, tests, CI), you can ignore this message.
+            If this change doesn't need a release (e.g., docs, tests, CI), you can ignore this message.`;
 
-            <details>
-            <summary>What is a changeset?</summary>
-
-            A changeset is a markdown file in the \`.changes/\` directory that describes what changed and how it affects the version number (major, minor, or patch).
-
-            </details>`;
-
-            // Check if we already commented
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: prNumber,
+              issue_number: context.issue.number,
             });
 
             const botComment = comments.find(comment =>
@@ -118,7 +75,7 @@ jobs:
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: prNumber,
+                issue_number: context.issue.number,
                 body: body
               });
             }
