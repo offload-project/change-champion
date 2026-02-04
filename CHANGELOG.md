@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 0.6.0 - 2026-02-04
+
+### Features
+
+- Add configurable changelog section headers via `sections` config option.
 ## 0.5.0 - 2026-02-04
 
 ### Features
