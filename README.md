@@ -302,9 +302,57 @@ changeset, the version will be bumped as `minor`.
 6. Run `champ publish` to create a git tag
 7. Push the tag to trigger your release pipeline
 
-## GitHub Actions Automation
+## GitHub Action
 
-Install GitHub Actions workflows to automate your release process:
+The easiest way to automate releases is with the change-champion action:
+
+```yaml
+name: Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: offload-project/change-champion@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+This single workflow handles everything:
+- Creates release PRs when changesets are merged
+- Creates git tags and GitHub releases when release PRs are merged
+
+### Action Inputs
+
+| Input | Description | Default |
+|-------|-------------|---------|
+| `token` | GitHub token for creating PRs and releases | `${{ github.token }}` |
+| `version` | Version of change-champion to use | `latest` |
+| `publish` | Whether to create git tag when release PR is merged | `true` |
+
+### Action Outputs
+
+| Output | Description |
+|--------|-------------|
+| `published` | Whether a release was published |
+| `version` | The version that was released |
+| `hasChangesets` | Whether there are pending changesets |
+| `pullRequestNumber` | The pull request number if one was created |
+
+## GitHub Actions Workflows
+
+Alternatively, install individual workflows for more control:
 
 ```bash
 champ init --with-github-actions
