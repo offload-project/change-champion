@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ChangeChampion;
 
 use ChangeChampion\Commands\AddCommand;
+use ChangeChampion\Commands\CheckCommand;
 use ChangeChampion\Commands\InitCommand;
 use ChangeChampion\Commands\PublishCommand;
 use ChangeChampion\Commands\StatusCommand;
@@ -25,6 +26,7 @@ class Application extends BaseApplication
             new StatusCommand(),
             new VersionCommand(),
             new PublishCommand(),
+            new CheckCommand(),
         ]);
     }
 }
