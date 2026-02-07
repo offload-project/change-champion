@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.6.0 - 2026-02-07
+
+### Features
+
+- Add Claude skill for using Change Champion
+
 ## v1.5.0 - 2026-02-04
 
 ### Features
