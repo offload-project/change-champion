@@ -63,9 +63,10 @@ champ version --dry-run
 champ version --prerelease alpha
 ```
 
-Consumes all changesets, updates `composer.json` version, and prepends a new entry to `CHANGELOG.md`.
+Consumes all pending changesets, prepends a new entry to `CHANGELOG.md` (unless `--no-changelog`), and deletes the applied changeset files. It does not modify `composer.json`.
 
 - `--dry-run`: Show what would happen without making changes
+- `--no-changelog`: Skip changelog generation
 - `--prerelease <tag>`: Create a pre-release version (e.g., `alpha`, `beta`, `rc`)
 
 **Pre-release workflow:**
