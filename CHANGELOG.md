@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.7.0 - 2026-02-07
+
+### Features
+
+- Add install-skill command to copy Claude skill file into projects
+
 ## v1.6.0 - 2026-02-07
 
 ### Features
