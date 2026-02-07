@@ -2,7 +2,7 @@
 name: change-champion
 description: Use when creating changesets, checking release status, previewing changelogs, or performing versioning and publishing with Change Champion. Relevant for any task involving version bumps, changelog generation, or release workflows.
 argument-hint: [ command ] [ options ]
-allowed-tools: Bash(champ *), Read, Glob, Grep
+allowed-tools: Bash(champ *), Bash(./vendor/bin/champ *), Read, Glob, Grep
 ---
 
 # Change Champion
@@ -124,8 +124,8 @@ type: minor
 Add user authentication with OAuth2 support.
 ```
 
-- **type**: `major`, `minor`, or `patch`
-- **summary**: Markdown text describing the change; supports issue references (`#123`, `Fixes #123`)
+- **type** (YAML frontmatter): `major`, `minor`, or `patch`
+- **markdown body**: Summary text describing the change; supports issue references (`#123`, `Fixes #123`)
 
 ## Configuration
 
