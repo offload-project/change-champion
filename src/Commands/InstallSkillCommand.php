@@ -19,6 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class InstallSkillCommand extends Command
 {
     use ResolvesResourceDir;
+
     protected function configure(): void
     {
         $this

@@ -21,6 +21,7 @@ use Symfony\Component\Finder\Finder;
 class InitCommand extends Command
 {
     use ResolvesResourceDir;
+
     protected function configure(): void
     {
         $this
