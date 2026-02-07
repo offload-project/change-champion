@@ -4,4 +4,4 @@
 /.php-cs-fixer.cache
 composer.lock
 .DS_Store
-resources/skills/
+.claude/skills/
