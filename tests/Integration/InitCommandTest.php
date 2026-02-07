@@ -20,7 +20,7 @@ class InitCommandTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->tempDir = sys_get_temp_dir().'/change-composer-init-test-'.uniqid();
+        $this->tempDir = sys_get_temp_dir().'/change-champion-init-test-'.uniqid();
         mkdir($this->tempDir, 0o755, true);
 
         // Create a minimal composer.json

@@ -8,6 +8,7 @@ use ChangeChampion\Commands\AddCommand;
 use ChangeChampion\Commands\CheckCommand;
 use ChangeChampion\Commands\GenerateCommand;
 use ChangeChampion\Commands\InitCommand;
+use ChangeChampion\Commands\InstallSkillCommand;
 use ChangeChampion\Commands\PreviewCommand;
 use ChangeChampion\Commands\PublishCommand;
 use ChangeChampion\Commands\StatusCommand;
@@ -24,6 +25,7 @@ class Application extends BaseApplication
 
         $this->addCommands([
             new InitCommand(),
+            new InstallSkillCommand(),
             new AddCommand(),
             new GenerateCommand(),
             new StatusCommand(),

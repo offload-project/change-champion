@@ -115,7 +115,7 @@ class InitCommand extends Command
 
     private function getResourcesDir(): string
     {
-        // When installed as a dependency: vendor/offload-project/change-composer/resources
+        // When installed as a dependency: vendor/offload-project/change-champion/resources
         // When running from source: ./resources
         $paths = [
             __DIR__.'/../../resources',
