@@ -113,6 +113,17 @@ champ init
 
 Creates the `.changes/` directory and `config.json`.
 
+### `champ install-skill` — Install Claude skill file
+
+```bash
+champ install-skill
+champ install-skill --force
+```
+
+Copies the Change Champion Claude skill file into `.claude/skills/change-champion/SKILL.md` in the current project.
+
+- `--force` / `-f`: Overwrite an existing skill file
+
 ## Changeset File Format
 
 Changesets are markdown files in `.changes/` with YAML frontmatter:

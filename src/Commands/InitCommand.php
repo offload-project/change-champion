@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ChangeChampion\Commands;
 
+use ChangeChampion\Commands\Concerns\ResolvesResourceDir;
 use ChangeChampion\Services\ConfigManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,6 +20,8 @@ use Symfony\Component\Finder\Finder;
 )]
 class InitCommand extends Command
 {
+    use ResolvesResourceDir;
+
     protected function configure(): void
     {
         $this
@@ -111,24 +114,5 @@ class InitCommand extends Command
                 '     in Settings → Actions → General → Workflow permissions',
             ]);
         }
-    }
-
-    private function getResourcesDir(): string
-    {
-        // When installed as a dependency: vendor/offload-project/change-composer/resources
-        // When running from source: ./resources
-        $paths = [
-            __DIR__.'/../../resources',
-            __DIR__.'/../../../resources',
-        ];
-
-        foreach ($paths as $path) {
-            $realPath = realpath($path);
-            if ($realPath && is_dir($realPath)) {
-                return $realPath;
-            }
-        }
-
-        return __DIR__.'/../../resources';
     }
 }
